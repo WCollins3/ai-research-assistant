@@ -1,0 +1,11 @@
+# Base image with Ollama
+FROM ollama/ollama:latest
+
+# Pull the Llama 2 model during build
+RUN ollama pull llama2
+
+# Expose the Ollama API on port 11434
+EXPOSE 11434
+
+# Run Ollama as a background service
+CMD ["ollama", "serve"]
