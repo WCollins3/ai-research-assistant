@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  ollama:
+    build: ./llama
+    container_name: ollama-container
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+
+  web-server:
+    build: ./web-server
+    container_name: web-server-container
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ollama
+
