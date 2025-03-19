@@ -23,19 +23,21 @@ def scrape_website(url):
         print(f"Failed to scrape {url}: {e}")
         return None
 
-def query_ai(question, context):
-    payload = {"model": "llama2", "prompt": f"{question} If you cannot answer this question with the given context, simply respond with \"NOT_ENOUGH_INFO\" and do not answer the question or include other text.\nContext: {context}", "stream": False}
+def query_ai(context):
+    payload = {"model": "llama2",
+               "prompt": f"Summarize this: {context}",
+               "stream": False}
     response = requests.post(LLAMA2_URL, json=payload)
     return response.json().get("response", "NOT_ENOUGH_INFO")
 
 @app.post("/ask")
 def ask_question(query: QueryRequest):
-    search_results = list(search(query.question, num_results=3))
+    search_results = list(search(query.question, num_results=1)) #limit for testing
     
     for url in search_results:
         content = scrape_website(url)
         if content:
-            ai_response = query_ai(query.question, content)
+            ai_response = query_ai(content)
             if "NOT_ENOUGH_INFO" not in ai_response.strip():
                 return {"answer": ai_response, "source": url}
         time.sleep(2)  # To avoid getting blocked
