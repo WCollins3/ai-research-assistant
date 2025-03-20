@@ -32,8 +32,7 @@ def query_ai(context):
 
 @app.post("/ask")
 def ask_question(query: QueryRequest):
-    search_results = list(search(query.question, num_results=1)) #limit for testing
-    
+    search_results = list(search(query.question, num_results=2)) #limit for testing
     for url in search_results:
         content = scrape_website(url)
         if content:
