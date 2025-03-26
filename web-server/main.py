@@ -18,7 +18,7 @@ def scrape_website(url):
         response = requests.get(url, headers=headers, timeout=5)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-        return " ".join([p.get_text() for p in soup.find_all("p")])[:2000] #truncate web response
+        return " ".join([p.get_text() for p in soup.find_all("p")])[:2000] # Truncate web response
     except Exception as e:
         print(f"Failed to scrape {url}: {e}")
         return None
@@ -32,13 +32,13 @@ def query_ai(context):
 
 @app.post("/ask")
 def ask_question(query: QueryRequest):
-    search_results = list(search(query.question, num_results=2)) #limit for testing
+    search_results = list(search(query.question, num_results=2)) # Limit for testing
     for url in search_results:
         content = scrape_website(url)
         if content:
             ai_response = query_ai(content)
-            if "NOT_ENOUGH_INFO" not in ai_response.strip():
+            if "NOT_ENOUGH_INFO" not in ai_response.strip(): # Leftover from more complex logic, keeping for future work
                 return {"answer": ai_response, "source": url}
         time.sleep(2)  # To avoid getting blocked
     
-    return {"answer": "I cannot confidently answer this question.", "source": None}
+    return {"answer": "I cannot confidently answer this question.", "source": None} # If we cannot get an answer
